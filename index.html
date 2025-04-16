@@ -9,11 +9,17 @@
 </head>
 <body>
   <main>
+    <div id="message-center">
+    </div>
     <p id="time-counter" class="time"></p>
-    <p id="wood-counter" class="counter"></p>
-    <p id="stone-counter" class="counter"></p>
-    <button id="chop-wood" class="button">Chop Wood</buton>
-    <button id="gather-stone" class="button">Gather Stone</button>
+    <div id="counter-list" class="list">
+      <p id="wood-counter" class="counter"></p>
+      <p id="stone-counter" class="counter"></p>
+    </div>
+    <div id="action-list" class="list">
+      <button id="get-wood" class="button">Chop Wood</buton>
+      <button id="get-stone" class="button">Gather Stone</button>
+    </div>
   </main>
   <script src='./src/script.js'></script>
 </body>
