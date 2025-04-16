@@ -79,12 +79,8 @@ const makeAxe = (event) => {
     newMessage.innerHTML = "Should take less time to get wood now.";
     messageCenter.appendChild(newMessage);
 
-  } else if (woodNumber < 8 || stoneNumber < 4) {
-    newMessage.innerHTML = `You don't have enough ${woodNumber < 8 ? "Wood" : "Stone"}`;
-    messageCenter.appendChild(newMessage);
-
   } else {
-    newMessage.innerHTML = `You don't have enough materials`;
+    newMessage.innerHTML = `You don't have enough ${woodNumber < 8 ? "Wood" : "Stone"}`;
     messageCenter.appendChild(newMessage);
   }
 }
