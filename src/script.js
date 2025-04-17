@@ -79,6 +79,9 @@ const makeAxe = (event) => {
     newMessage.innerHTML = "Should take less time to get wood now.";
     messageCenter.appendChild(newMessage);
 
+    // change wood button tooltip to reflect change
+    woodBtn.title = "2 hours";
+
   } else {
     newMessage.innerHTML = `You don't have enough ${woodNumber < 8 ? "Wood" : "Stone"}`;
     messageCenter.appendChild(newMessage);

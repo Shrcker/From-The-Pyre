@@ -5,7 +5,7 @@
   <meta name='viewport' content='width=device-width, initial-scale=1.0' />
   <meta http-equiv='X-UA-Compatible' content='ie=edge' />
   <title>Button Game</title>
-  <link rel='stylesheet' href='./assets/styles/styles.css' />
+  <link rel='stylesheet' href='./src/assets/styles/styles.css' />
 </head>
 <body>
   <main>
@@ -16,10 +16,12 @@
       <p id="wood-counter" class="counter"></p>
       <p id="stone-counter" class="counter"></p>
     </div>
+
     <div id="action-list" class="list">
-      <button id="get-wood" class="button">Chop Wood</buton>
-      <button id="get-stone" class="button">Gather Stone</button>
+      <button title="5 hours" id="get-wood" class="button tooltip">Chop Wood</buton>
+      <button title="3 hours" id="get-stone" class="button tooltip">Gather Stone</button>
     </div>
+
   </main>
   <script src='./src/script.js'></script>
 </body>
