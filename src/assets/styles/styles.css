@@ -1,10 +1,10 @@
-button {
+.action {
   position: relative;
   display: inline-block;
   margin-top: 20px;
 }
 
-button[title]:hover:after {
+.action[title]:hover:after {
   content: attr(title);
   width: 120px;
   background-color: black;
