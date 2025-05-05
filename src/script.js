@@ -37,16 +37,22 @@ const updateGame = () => {
     wasAxeBtnShown = true;
   }
 
+  const pyreNotifMsg = [
+    `You grow restless. Hands shake from an absent burn.`, 
+    `The Pyre is not big enough; you have not grown the Pyre...`,
+    `It lurks behind the eyes...`
+    ];
+
   if (pyreNotifState === 0 && timeSincePyre >= 24) {
-    updateMessageCenter(`You grow restless. Hands shake from an absent burn.`);
+    updateMessageCenter(pyreNotifMsg[pyreNotifState]);
     pyreNotifState++;
 
   } else if (pyreNotifState === 1 && timeSincePyre >= 72) {
-    updateMessageCenter(`The Pyre is not big enough; you have not grown the Pyre...`);
+    updateMessageCenter(pyreNotifMsg[pyreNotifState]);
     pyreNotifState++;
 
   } else if (pyreNotifState === 2 && timeSincePyre >= 96) {
-    updateMessageCenter(`It lurks behind the eyes...`);
+    updateMessageCenter(pyreNotifMsg[pyreNotifState]);
     pyreNotifState++;
 
   } else {
@@ -78,14 +84,9 @@ const updateMessageCenter = (message) => {
   const messageCenter = document.getElementById("message-center");
   const newMessage = document.createElement("p");
 
-  // Always initialize message center so messages can't stack
-  // messageCenter.innerHTML = '';
-  // newMessage.innerHTML = '';
   // Update resource counts here
   woodCounter.innerHTML = `Wood: ${woodNumber}`;
   stoneCounter.innerHTML = `Stone: ${stoneNumber}`;
-
-  console.log(messageCenter.childNodes.length);
   
   if (message) {
     newMessage.innerHTML = message;
