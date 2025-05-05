@@ -1,26 +1,30 @@
 const timeCounter = document.getElementById("time-counter");
 const woodBtn = document.getElementById("get-wood");
 const stoneBtn = document.getElementById("get-stone");
+const fuelBtn = document.getElementById("add-fuel");
 const stoneCounter = document.getElementById("stone-counter");
 const woodCounter = document.getElementById("wood-counter");
+const pyreCounter = document.getElementById("pyre-counter");
 const axeBtn = document.getElementById("get-axe");
 const counterList = document.getElementById("counter-list");
 const actionList = document.getElementById("action-list");
-const messageCenter = document.getElementById("message-center");
 
-const newMessage = document.createElement("p");
-
+// Consider tracking these lets in defined objects
 let timeNumber = 12;
-let woodNumber = 1;
-let stoneNumber = 1;
+let woodNumber = 0;
+let stoneNumber = 0;
+let fuelNumber = 0;
 let isAxeMade = false;
 let wasAxeBtnShown = false;
 
-const updateGame = () => {
+// Maybe track progress such as this in an object later in dev
+let timeSincePyre = 0;
+let pyreNotifState = 0;
 
-  if (timeCounter.innerHTML = `A New Day Begins...<br>Time: ${timeNumber}`) {
-    timeCounter.innerHTML = `Time: ${timeNumber}`;
-  }
+
+const updateGame = () => {
+  
+  pyreCounter.innerHTML = `Fuel for the Pyre: ${fuelNumber}`;
 
   if (woodNumber >= 6 && !wasAxeBtnShown) {
     const newAxeBtn = document.createElement("button");
@@ -33,12 +37,33 @@ const updateGame = () => {
     wasAxeBtnShown = true;
   }
 
-  messageCenter.innerHTML = '';
-  newMessage.innerHTML = '';
+  if (pyreNotifState === 0 && timeSincePyre >= 24) {
+    updateMessageCenter(`You grow restless. Hands shake from an absent burn.`);
+    pyreNotifState++;
+
+  } else if (pyreNotifState === 1 && timeSincePyre >= 72) {
+    updateMessageCenter(`The Pyre is not big enough; you have not grown the Pyre...`);
+    pyreNotifState++;
+
+  } else if (pyreNotifState === 2 && timeSincePyre >= 96) {
+    updateMessageCenter(`It lurks behind the eyes...`);
+    pyreNotifState++;
+
+  } else {
+    updateMessageCenter();
+  };
+
 }
 
-const updateTime = (amount) => {
+// Instances of updateTime will take a boolean to decide if the triggering function is the
+// "Add fuel to the pyre" action
+const updateTime = (amount, isFuelAct) => {
   timeNumber -= amount;
+  // If the action updating time is the pyre "Add Fuel" action (true), then reset timeSincePyre and notif state to 0
+  // Otherwise, add passed hours to timeSincePyre.
+  timeSincePyre = isFuelAct ? 0 : timeSincePyre + amount;
+  if (isFuelAct) {pyreNotifState = 0};
+
   if (timeNumber > 0) {
     timeCounter.innerHTML = `Time: ${timeNumber}`;
   } else {
@@ -49,13 +74,39 @@ const updateTime = (amount) => {
   updateGame();
 }
 
+const updateMessageCenter = (message) => {
+  const messageCenter = document.getElementById("message-center");
+  const newMessage = document.createElement("p");
+
+  // Always initialize message center so messages can't stack
+  // messageCenter.innerHTML = '';
+  // newMessage.innerHTML = '';
+  // Update resource counts here
+  woodCounter.innerHTML = `Wood: ${woodNumber}`;
+  stoneCounter.innerHTML = `Stone: ${stoneNumber}`;
+
+  console.log(messageCenter.childNodes.length);
+  
+  if (message) {
+    newMessage.innerHTML = message;
+    messageCenter.appendChild(newMessage);
+
+  } else if (!messageCenter.firstChild) {
+    return;
+
+  } else {
+    messageCenter.removeChild(messageCenter.firstChild);
+  }
+
+}
+
 const addWood = (event) => {
   event.preventDefault();
 
-  let timeToWood = isAxeMade ? 2 : 5;
+  let timeToWood = isAxeMade ? 2 : 4;
   woodCounter.innerHTML = `Wood: ${woodNumber++}`;
 
-  updateTime(timeToWood);
+  updateTime(timeToWood, false);
 }
 
 const addStone = (event) => {
@@ -64,7 +115,7 @@ const addStone = (event) => {
   let timeToStone = 3;
   stoneCounter.innerHTML = `Stone: ${stoneNumber++}`;
 
-  updateTime(timeToStone);
+  updateTime(timeToStone, false);
 }
 
 const makeAxe = (event) => {
@@ -76,15 +127,43 @@ const makeAxe = (event) => {
     isAxeMade = true;
     actionList.removeChild(actionList.lastElementChild);
 
-    newMessage.innerHTML = "Should take less time to get wood now.";
-    messageCenter.appendChild(newMessage);
+    updateMessageCenter("Should take less time to get wood now.");
 
     // change wood button tooltip to reflect change
     woodBtn.title = "2 hours";
 
   } else {
-    newMessage.innerHTML = `You don't have enough ${woodNumber < 8 ? "Wood" : "Stone"}`;
-    messageCenter.appendChild(newMessage);
+    updateMessageCenter(`You don't have enough ${woodNumber < 8 ? "Wood" : "Stone"}`);
+  }
+}
+
+const addFuel = (event) => {
+  event.preventDefault();
+
+  let timeToFuel = 1;
+
+  if (woodNumber >= 10) {
+    woodNumber -= 10;
+    fuelNumber += 10;
+    updateTime(timeToFuel, true);
+  } else {
+    updateMessageCenter(`You don't have enough tinder.<br>The Pyre looms...`);
+    return;
+  }
+
+  switch (fuelNumber) {
+    case 10:
+      updateMessageCenter(`Starting with a bundle of wood in a square formation, 
+        the pyre starts small, but may soon overtake the sky.`);
+      break;
+    case 60: 
+      updateMessageCenter(`The pyre grows taller, your stomach burns bright at the thought.`);
+      break;
+    case 120:
+      updateMessageCenter(`Logs arranged in squares dominate the clearing. It dominates your
+        sight whenever you look up from the ground. It is perfect, yet now you must surround it
+        with a wall of stone, so that the logs may burn without destroying the forest around you.`);
+      break;
   }
 }
 
@@ -92,3 +171,4 @@ updateGame();
 
 woodBtn.addEventListener("click", addWood);
 stoneBtn.addEventListener("click", addStone);
+fuelBtn.addEventListener("click", addFuel);
