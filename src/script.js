@@ -21,7 +21,6 @@ const gameState = {
   pyreNotifState: 0,
   updateGame() {
     pyreCounter.innerHTML = `Fuel for the Pyre: ${this.fuelNumber}`;
-    console.log(axeBtn);
 
     gameState.updateToken();
 
@@ -56,7 +55,6 @@ const gameState = {
 
     if (gameState.woodNumber >= 6) {
       addEl(axeBtn, actionList);
-      console.log("hi");
     }
   },
   updateMessageCenter(message) {
