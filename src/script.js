@@ -1,5 +1,6 @@
 import { createAxeBtn } from "./modules/toolBtn.js";
 import { addEl, removeEl } from "./modules/helpers/addEl.js";
+import { randomNum } from "./modules/helpers/randomNum.js";
 
 const timeCounter = document.getElementById("time-counter");
 const woodBtn = document.getElementById("get-wood");
@@ -56,7 +57,6 @@ const gameState = {
 
     if (gameState.woodNumber >= 6) {
       addEl(axeBtn, actionList);
-      console.log("hi");
     }
   },
   updateMessageCenter(message) {
@@ -66,10 +66,11 @@ const gameState = {
     if (message) {
       newMessage.innerHTML = message;
       messageCenter.appendChild(newMessage);
-    } else if (!messageCenter.firstChild) {
+    }
+    else if (!messageCenter.firstChild) {
       return;
     } else {
-      messageCenter.removeChild(messageCenter.firstChild);
+      messageCenter.removeChild(messageCenter.lastChild);
     }
   },
   updateToken(updateObj = undefined) {
