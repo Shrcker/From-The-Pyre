@@ -1,6 +1,6 @@
 import { createAxeBtn } from "./modules/toolBtn.js";
 import { addEl, removeEl } from "./modules/helpers/addEl.js";
-import { randomNum } from "./modules/helpers/randomNum.js";
+import { CycleState } from "./modules/CycleState.js";
 
 const timeCounter = document.getElementById("time-counter");
 const woodBtn = document.getElementById("get-wood");
@@ -11,7 +11,13 @@ const woodCounter = document.getElementById("wood-counter");
 const pyreCounter = document.getElementById("pyre-counter");
 const axeBtnEl = document.getElementById("get-axe");
 const counterList = document.getElementById("counter-list");
-const actionList = document.getElementById("action-list");
+const actionList = document.getElementById("day-action-list");
+const restBtn = document.getElementById("rest");
+const studyBtn = document.getElementById("study");
+const messageCenter = document.getElementById("message-center");
+
+const dayBtnArr = document.querySelectorAll(".day");
+const nightBtnArr = document.querySelectorAll(".night");
 
 const gameState = {
   timeLeft: 12,
@@ -20,11 +26,23 @@ const gameState = {
   fuelNumber: 0,
   timeSincePyre: 0,
   pyreNotifState: 0,
+  studyProg: 0,
+  currentCycle: CycleState.DAY,
   updateGame() {
-    pyreCounter.innerHTML = `Fuel for the Pyre: ${this.fuelNumber}`;
-    console.log(axeBtn);
+    if (this.currentCycle === CycleState.NIGHT) {
+      dayBtnArr.forEach((element) => {
+        element.classList.remove("hidden");
+      });
+      nightBtnArr.forEach((element) => {
+        element.classList.add("hidden");
+      });
 
-    gameState.updateToken();
+      this.currentCycle = CycleState.DAY;
+      return;
+    }
+    this.updateToken();
+
+    pyreCounter.innerHTML = `Fuel for the Pyre: ${this.fuelNumber}`;
 
     const pyreNotifMsg = [
       `You grow restless. Hands shake from an absent burn.`,
@@ -32,17 +50,17 @@ const gameState = {
       `It lurks behind the eyes...`,
     ];
 
-    if (gameState.pyreNotifState === 0 && gameState.timeSincePyre >= 24) {
-      gameState.updateMessageCenter(pyreNotifMsg[gameState.pyreNotifState]);
-      gameState.pyreNotifState++;
-    } else if (gameState.pyreNotifState === 1 && gameState.timeSincePyre >= 72) {
-      gameState.updateMessageCenter(pyreNotifMsg[gameState.pyreNotifState]);
-      gameState.pyreNotifState++;
-    } else if (gameState.pyreNotifState === 2 && gameState.timeSincePyre >= 96) {
-      gameState.updateMessageCenter(pyreNotifMsg[gameState.pyreNotifState]);
-      gameState.pyreNotifState++;
+    if (this.pyreNotifState === 0 && this.timeSincePyre >= 24) {
+      this.updateMessageCenter(pyreNotifMsg[this.pyreNotifState]);
+      this.pyreNotifState++;
+    } else if (this.pyreNotifState === 1 && this.timeSincePyre >= 72) {
+      this.updateMessageCenter(pyreNotifMsg[this.pyreNotifState]);
+      this.pyreNotifState++;
+    } else if (this.pyreNotifState === 2 && this.timeSincePyre >= 96) {
+      this.updateMessageCenter(pyreNotifMsg[this.pyreNotifState]);
+      this.pyreNotifState++;
     } else {
-      gameState.updateMessageCenter();
+      this.updateMessageCenter();
     }
 
     // Should change this if chain into its own function since having to add it for every tool would be a bother
@@ -55,51 +73,70 @@ const gameState = {
       return;
     }
 
-    if (gameState.woodNumber >= 6) {
+    if (this.woodNumber >= 6) {
       addEl(axeBtn, actionList);
     }
   },
-  updateMessageCenter(message) {
-    const messageCenter = document.getElementById("message-center");
-    const newMessage = document.createElement("p");
+  updateNight() {
+    this.currentCycle = CycleState.NIGHT;
 
-    if (message) {
-      newMessage.innerHTML = message;
-      messageCenter.appendChild(newMessage);
+    dayBtnArr.forEach((element) => {
+      element.classList.add("hidden");
+    });
+    nightBtnArr.forEach((element) => {
+      element.classList.remove("hidden");
+    });
+
+    this.updateMessageCenter(
+      "The sun sets, granting you the grace of lamp light in the cabin.<br>There is time to pass, how shall you spend it?"
+    );
+  },
+  updateMessageCenter(message) {
+    const oldMessage = messageCenter.firstChild;
+    const newMessage = document.createElement("p");
+    newMessage.innerHTML = message;
+
+    if (oldMessage != null) {
+      messageCenter.removeChild(oldMessage);
     }
-    else if (!messageCenter.firstChild) {
+    if (message) {
+      messageCenter.appendChild(newMessage);
       return;
-    } else {
-      messageCenter.removeChild(messageCenter.lastChild);
     }
   },
   updateToken(updateObj = undefined) {
     if (updateObj) {
-      gameState.woodNumber = updateObj.newWoodNumber;
-      gameState.stoneNumber = updateObj.newStoneNumber;
+      this.woodNumber = updateObj.newWoodNumber;
+      this.stoneNumber = updateObj.newStoneNumber;
     }
-    woodCounter.innerHTML = `Wood: ${gameState.woodNumber}`;
-    stoneCounter.innerHTML = `Stone: ${gameState.stoneNumber}`;
+    woodCounter.innerHTML = `Wood: ${this.woodNumber}`;
+    stoneCounter.innerHTML = `Stone: ${this.stoneNumber}`;
   },
   updateTime(amount, isFuelAct) {
+    if (this.currentCycle === CycleState.NIGHT) {
+      this.timeLeft += amount;
+      timeCounter.innerHTML = `A New Day Begins...<br>Time: ${this.timeLeft}`;
+      return;
+    }
     // Instances of updateTime will take a boolean to decide if the triggering function is the
     // "Add fuel to the pyre" action
     this.timeLeft -= amount;
     // If the action updating time is the pyre "Add Fuel" action (true), then reset gameState.timeSincePyre and notif state to 0
     // Otherwise, add passed hours to gameState.timeSincePyre.
-    gameState.timeSincePyre = isFuelAct ? 0 : gameState.timeSincePyre + amount;
+    this.timeSincePyre = isFuelAct ? 0 : this.timeSincePyre + amount;
     if (isFuelAct) {
-      gameState.pyreNotifState = 0;
+      this.pyreNotifState = 0;
     }
-
     if (this.timeLeft > 0) {
       timeCounter.innerHTML = `Time: ${this.timeLeft}`;
+      this.updateGame();
+      return;
     } else {
       this.timeLeft = 12;
-      timeCounter.innerHTML = `A New Day Begins...<br>Time: ${this.timeLeft}`;
-    }
+      this.updateNight();
 
-    this.updateGame();
+      return;
+    }
   },
   addWood(event) {
     event.preventDefault();
@@ -107,8 +144,8 @@ const gameState = {
     gameState.woodNumber++;
     let timeToWood = axeBtn.wasMade ? 2 : 4;
 
-    gameState.updateTime(timeToWood, false);
     gameState.updateToken();
+    gameState.updateTime(timeToWood, false);
   },
   addStone(event) {
     event.preventDefault();
@@ -116,8 +153,43 @@ const gameState = {
     gameState.stoneNumber++;
     let timeToStone = 3;
 
-    gameState.updateTime(timeToStone, false);
     gameState.updateToken();
+    gameState.updateTime(timeToStone, false);
+  },
+  rest(event) {
+    event.preventDefault();
+    const restBonus = 2;
+
+    const restMessage = `
+      lorem ipsum
+      `;
+
+    gameState.updateMessageCenter(restMessage);
+
+    gameState.updateTime(restBonus);
+    gameState.updateGame();
+  },
+  study(event) {
+    event.preventDefault();
+    let studyText = "";
+
+    switch (gameState.studyProg) {
+      case 0:
+        studyText = `
+          lorem ipsum
+          `;
+        break;
+      case 1:
+        break;
+      case 2:
+        break;
+      case 3:
+        break;
+    }
+
+    gameState.studyProg++;
+    gameState.updateMessageCenter(studyText);
+    gameState.updateGame();
   },
   addFuel(event) {
     event.preventDefault();
@@ -160,6 +232,8 @@ const axeBtn = createAxeBtn(gameState);
 
 gameState.updateGame();
 
+studyBtn.addEventListener("click", gameState.study);
+restBtn.addEventListener("click", gameState.rest);
 woodBtn.addEventListener("click", gameState.addWood);
 stoneBtn.addEventListener("click", gameState.addStone);
 fuelBtn.addEventListener("click", gameState.addFuel);

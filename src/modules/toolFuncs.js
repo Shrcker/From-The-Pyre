@@ -1,6 +1,4 @@
-import { addEl, removeEl } from "./helpers/addEl.js";
-
-export const makeAxe = (event, stateObj) => {
+export function makeAxe(event, gameState) {
   event.preventDefault();
   let { woodNumber, stoneNumber } = stateObj;
   const { updateMessageCenter, updateToken } = stateObj;
@@ -19,4 +17,4 @@ export const makeAxe = (event, stateObj) => {
   } else {
     updateMessageCenter(`You don't have enough ${woodNumber < 8 ? "Wood" : "Stone"}`);
   }
-};
+}
