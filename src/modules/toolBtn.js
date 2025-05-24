@@ -1,7 +1,7 @@
 import { parseHTML } from './helpers/parseHTML.js';
 import { makeAxe } from './toolFuncs.js';
 
-const createToolBtn = (toolName, resourceArr, func) => {
+function createToolBtn(toolName, resourceArr, func) {
   return {
     toolName: toolName,
     resourceArr: resourceArr,
@@ -20,6 +20,6 @@ const createToolBtn = (toolName, resourceArr, func) => {
   }
 };
 
-export const createAxeBtn = (state) => {
+export function createAxeBtn(state) {
   return createToolBtn("Axe", [{ resource: "wood", cost: 8 }, { resource: "stone", cost: 4 }], (e) => makeAxe(e, state));
 };

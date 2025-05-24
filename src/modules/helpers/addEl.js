@@ -1,9 +1,21 @@
 export function addEl(obj = undefined, parent) {
-  obj.wasShown = true;
-  return parent.appendChild(obj.toolHTML());
+  let newEl = obj;
+  
+  if (obj.toolHTML) {
+    obj.wasShown = true;
+    newEl = obj.toolHTML();
+  } 
+
+  return parent.appendChild(newEl);
 }
 
 export function removeEl(obj, parent) {
-  obj.wasMade = true;
-  return parent.removeChild(obj.toolHTML());
+  let targetEl = obj;
+
+  if (obj.toolHTML) {
+    obj.wasMade = true;
+    targetEl = obj.toolHTML();
+  }
+
+  return parent.removeChild(targetEl);
 }

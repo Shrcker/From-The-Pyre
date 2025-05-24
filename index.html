@@ -11,20 +11,22 @@
   <main>
     <div id="message-center">
     </div>
-    <p id="time-counter" class="time"></p>
+    <p id="time-counter" class="time day"></p>
     <div id="counter-list" class="list">
       <p id="wood-counter" class="counter"></p>
       <p id="stone-counter" class="counter"></p>
     </div>
 
-    <div id="count-list" class="list">
+    <div id="count-list" class="list day">
       <p id="pyre-counter" class="counter"></p>
       <button title="1 hour, 10 wood" id="add-fuel" class="action">Add Fuel</button>
     </div>
 
-    <div id="action-list" class="list">
-      <button title="4 hours" id="get-wood" class="action">Chop Wood</buton>
-      <button title="3 hours" id="get-stone" class="action">Gather Stone</button>
+    <div id="day-action-list" class="list">
+      <button title="4 hours" id="get-wood" class="action day">Chop Wood</buton>
+      <button title="3 hours" id="get-stone" class="action day">Gather Stone</button>
+      <button title="Preserve your energy (will have two more hours to work in the morning)" id="rest" class="action night hidden">Rest</button>
+      <button title="Surely there is something of value here..." id="study" class="action night hidden">Search Cabin</button>
     </div>
 
   </main>
