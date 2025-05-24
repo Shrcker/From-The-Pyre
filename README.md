@@ -4,13 +4,13 @@ A browser game about fuelling the Pyre, a bizarre idea that lead you into the da
 
 A *very* work in progress text-based game inspired by A Dark Room and Cultist Simulator.
 
-**Link:** [Github](https://github.com/Shrcker/button-game)
+**Link:** [Github](https://github.com/Shrcker/From-The-Pyre)
 
 ## Usage
 
 Server-side for the application is planned, so for now please follow this pages link to play the current version of the game:
 
-**Link:** [Game_Link](https://shrcker.github.io/button-game)
+**Link:** [Game_Link](https://shrcker.github.io/From-The-Pyre)
 
 Otherwise just have fun with it! Currently there is no ending, or beginning for that matter, but one may come sooner than the other!
 
