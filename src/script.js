@@ -1,6 +1,10 @@
-import { createAxeBtn } from "./modules/toolBtn.js";
+import { createAxeBtn } from "./modules/Tool/toolBtn.js";
 import { addEl, removeEl } from "./modules/helpers/addEl.js";
-import { CycleState } from "./modules/CycleState.js";
+import { CycleState } from "./modules/enums/CycleState.js";
+import { RarityTable } from "./modules/enums/RarityTable.js";
+import { weightedRandNum } from "./modules/helpers/weightedRandNum.js";
+import { randomEnc } from "./modules/Encounter/randomEnc.js";
+import { makeAxe } from "./modules/Tool/toolFuncs.js";
 
 const timeCounter = document.getElementById("time-counter");
 const woodBtn = document.getElementById("get-wood");
@@ -106,11 +110,11 @@ const gameState = {
   },
   updateToken(updateObj = undefined) {
     if (updateObj) {
-      this.woodNumber = updateObj.newWoodNumber;
-      this.stoneNumber = updateObj.newStoneNumber;
+      gameState.woodNumber = updateObj.newWoodNumber;
+      gameState.stoneNumber = updateObj.newStoneNumber;
     }
-    woodCounter.innerHTML = `Wood: ${this.woodNumber}`;
-    stoneCounter.innerHTML = `Stone: ${this.stoneNumber}`;
+    woodCounter.innerHTML = `Wood: ${gameState.woodNumber}`;
+    stoneCounter.innerHTML = `Stone: ${gameState.stoneNumber}`;
   },
   updateTime(amount, isFuelAct) {
     if (this.currentCycle === CycleState.NIGHT) {
@@ -144,6 +148,9 @@ const gameState = {
     gameState.woodNumber++;
     let timeToWood = axeBtn.wasMade ? 2 : 4;
 
+    const encounter = randomEnc();
+    if (encounter) encounter.addToDOM();
+
     gameState.updateToken();
     gameState.updateTime(timeToWood, false);
   },
@@ -152,6 +159,9 @@ const gameState = {
 
     gameState.stoneNumber++;
     let timeToStone = 3;
+
+    const encounter = randomEnc();
+    if (encounter) encounter.addToDOM();
 
     gameState.updateToken();
     gameState.updateTime(timeToStone, false);
@@ -228,7 +238,11 @@ const gameState = {
   },
 };
 
-const axeBtn = createAxeBtn(gameState);
+const axeBtn = createAxeBtn();
+document.addEventListener(axeBtn.onclick.type, () => {
+  axeBtn.wasMade = true;
+  makeAxe(gameState);
+});
 
 gameState.updateGame();
 

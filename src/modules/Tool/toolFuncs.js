@@ -1,5 +1,4 @@
-export function makeAxe(event, gameState) {
-  event.preventDefault();
+export function makeAxe(stateObj) {
   let { woodNumber, stoneNumber } = stateObj;
   const { updateMessageCenter, updateToken } = stateObj;
 
