@@ -23,6 +23,7 @@ const messageCenter = document.getElementById("message-center");
 const dayBtnArr = document.querySelectorAll(".day");
 const nightBtnArr = document.querySelectorAll(".night");
 
+// Track the game's active state with an object to be passed through function arguments
 const gameState = {
   timeLeft: 12,
   woodNumber: 0,
@@ -32,6 +33,7 @@ const gameState = {
   pyreNotifState: 0,
   studyProg: 0,
   currentCycle: CycleState.DAY,
+  // function to update the game with the current gameState data
   updateGame() {
     if (this.currentCycle === CycleState.NIGHT) {
       dayBtnArr.forEach((element) => {
@@ -82,6 +84,8 @@ const gameState = {
     }
   },
   updateNight() {
+    // same as above updateGame, but for transitioning the game to night
+    // could try and bring this functionality into the base updateGame in another refactor
     this.currentCycle = CycleState.NIGHT;
 
     dayBtnArr.forEach((element) => {
@@ -100,6 +104,7 @@ const gameState = {
     const newMessage = document.createElement("p");
     newMessage.innerHTML = message;
 
+    // if there's already a message in messageCenter, replace it
     if (oldMessage != null) {
       messageCenter.removeChild(oldMessage);
     }
@@ -117,6 +122,7 @@ const gameState = {
     stoneCounter.innerHTML = `Stone: ${gameState.stoneNumber}`;
   },
   updateTime(amount, isFuelAct) {
+    // amount could be incremental if function is called during night phase.
     if (this.currentCycle === CycleState.NIGHT) {
       this.timeLeft += amount;
       timeCounter.innerHTML = `A New Day Begins...<br>Time: ${this.timeLeft}`;
@@ -166,10 +172,12 @@ const gameState = {
     gameState.updateToken();
     gameState.updateTime(timeToStone, false);
   },
+  // function to call when the player rests at night
   rest(event) {
     event.preventDefault();
     const restBonus = 2;
 
+    // placeholder text, remember to replace later
     const restMessage = `
       lorem ipsum
       `;
@@ -179,10 +187,12 @@ const gameState = {
     gameState.updateTime(restBonus);
     gameState.updateGame();
   },
+  // function to call when player does a "study" action at night
   study(event) {
     event.preventDefault();
     let studyText = "";
 
+    // switch for different study texts, remember to fill these out later
     switch (gameState.studyProg) {
       case 0:
         studyText = `
@@ -197,6 +207,7 @@ const gameState = {
         break;
     }
 
+    // increment study progress, as this function is only called when the player has studied
     gameState.studyProg++;
     gameState.updateMessageCenter(studyText);
     gameState.updateGame();
@@ -215,6 +226,8 @@ const gameState = {
       return;
     }
 
+    // remember this text is just as replaceable as the other placeholders
+    // this is just a fancy placeholder u_u
     const fuelMsg = [
       `Starting with a bundle of wood in a square formation, 
       the pyre starts small, but may soon overtake the sky.`,
@@ -238,6 +251,7 @@ const gameState = {
   },
 };
 
+// initialize the axe button so that its data can be used elsewhere in runtime
 const axeBtn = createAxeBtn();
 document.addEventListener(axeBtn.onclick.type, () => {
   axeBtn.wasMade = true;
