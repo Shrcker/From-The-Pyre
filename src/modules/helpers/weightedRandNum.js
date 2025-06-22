@@ -1,3 +1,6 @@
+// weight a random number based on the length of an object
+// the larger the value in proportion to the test group, 
+// the more likely it will be rolled
 export function weightedRandNum(obj) {
   let sum = 0;
 
